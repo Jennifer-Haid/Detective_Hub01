@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Дело № 404</title>
+    <style>
+        body { background: #0f172a; color: #38bdf8; font-family: sans-serif; padding: 40px; text-align: center; }
+        button { background: #38bdf8; color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Дело № 404: Исчезновение в сети</h1>
+    <p style="color: #94a3b8; margin: 20px 0;">Вы нашли секретный узел связи. Нажмите кнопку, чтобы завершить расследование.</p>
+    
+    <button onclick="finishCase()">Завершить дело</button>
+
+    <script>
+        function finishCase() {
+            const activeSession = localStorage.getItem('active_detective_session');
+            if (activeSession) {
+                const user = JSON.parse(activeSession);
+                if (!user.completedCases) user.completedCases = [];
+                if (!user.completedCases.includes('case-404')) {
+                    user.completedCases.push('case-404');
+                }
+                localStorage.setItem('active_detective_session', JSON.stringify(user));
+                localStorage.setItem('detective_user_' + user.username, JSON.stringify(user));
+            }
+            alert('Дело успешно раскрыто!');
+            window.location.href = '../index.html'; // Возврат на главный экран
+        }
+    </script>
+</body>
+</html>
