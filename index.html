@@ -23,7 +23,6 @@
             padding: 20px;
         }
 
-        /* ---------------- ГОЛОГРАФИЧЕСКИЕ ОКНА ---------------- */
         .hologram-card {
             background: rgba(11, 19, 36, 0.85);
             backdrop-filter: blur(12px);
@@ -63,7 +62,6 @@
             margin-bottom: 15px;
         }
 
-        /* ---------------- ВЫБОР АВАТАРА ---------------- */
         .avatar-selection {
             display: flex;
             justify-content: center;
@@ -89,7 +87,6 @@
             transform: scale(1.05);
         }
 
-        /* ---------------- ПОЛЯ И КНОПКИ ---------------- */
         .form-group {
             margin-bottom: 12px;
             position: relative;
@@ -157,7 +154,6 @@
 
         .hidden { display: none !important; }
 
-        /* ---------------- ШАПКА И ЛИЧНЫЙ КАБИНЕТ ---------------- */
         .user-header {
             display: flex;
             align-items: center;
@@ -181,10 +177,6 @@
             background: rgba(56, 189, 248, 0.1);
         }
 
-        .user-avatar-container {
-            position: relative;
-        }
-
         .user-avatar {
             width: 55px;
             height: 55px;
@@ -194,7 +186,6 @@
             box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
         }
 
-        /* ---------------- СЕТКА ДЕЛ (ФАЙЛЫ) ---------------- */
         .section-title {
             font-size: 16px;
             letter-spacing: 1.5px;
@@ -211,7 +202,6 @@
             gap: 20px;
         }
 
-        /* Карточка-Папка */
         .case-folder {
             background: rgba(15, 23, 42, 0.7);
             border: 1px solid rgba(56, 189, 248, 0.25);
@@ -269,7 +259,6 @@
         .status-new { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
         .status-completed { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
 
-        /* ---------------- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ---------------- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -305,13 +294,12 @@
 </head>
 <body>
 
-    <!-- ================= ОКНО АВТОРИЗАЦИИ / РЕГИСТРАЦИИ ================= -->
+    <!-- ОКНО АВТОРИЗАЦИИ -->
     <div id="authContainer" class="hologram-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom: 1px solid rgba(56, 189, 248, 0.3); padding-bottom:8px;">
             <div class="logo-title">🔍 DETECTIVE_HUB</div>
         </div>
 
-        <!-- Форма регистрации -->
         <form id="registerForm">
             <div class="hologram-title">CREATE YOUR ACCOUNT</div>
             
@@ -323,9 +311,8 @@
             <div class="form-group">
                 <input type="text" id="regUsername" class="input-field" placeholder="ИМЯ ДЕТЕКТИВА (USERNAME)" required>
             </div>
-            <!-- Поле email стало необязательным (без required) -->
             <div class="form-group">
-                <input type="email" id="regEmail" class="input-field" placeholder="ЭЛЕКТРОННАЯ ПОЧТА (EMAIL - НЕОБЯЗАТЕЛЬНО)">
+                <input type="email" id="regEmail" class="input-field" placeholder="ЭЛЕКТРОННАЯ ПОЧТА (НЕОБЯЗАТЕЛЬНО)">
             </div>
             <div class="form-group">
                 <input type="password" id="regPassword" class="input-field" placeholder="ПАРОЛЬ (PASSWORD)" required>
@@ -340,7 +327,6 @@
             <div class="toggle-link" onclick="switchAuthMode('login')">[ УЖЕ ЕСТЬ АККАУНТ? ВОЙТИ ]</div>
         </form>
 
-        <!-- Форма входа -->
         <form id="loginForm" class="hidden">
             <div class="hologram-title">SYSTEM LOGIN</div>
             <div class="form-group">
@@ -356,15 +342,11 @@
         </form>
     </div>
 
-
-    <!-- ================= ГЛАВНЫЙ ЭКРАН ИГРЫ ================= -->
+    <!-- ГЛАВНЫЙ ЭКРАН -->
     <div id="mainDashboard" class="dashboard hidden">
-        <!-- Верхняя панель (Профиль) -->
         <div class="user-header">
             <div class="user-profile" onclick="openProfileModal()">
-                <div class="user-avatar-container">
-                    <img id="userAvatarDisplay" class="user-avatar" src="images/male.jpg" alt="Аватар">
-                </div>
+                <img id="userAvatarDisplay" class="user-avatar" src="images/male.jpg" alt="Аватар">
                 <div>
                     <h2 id="userNameDisplay" style="color: #38bdf8; font-size: 18px;">Детектив</h2>
                     <span style="font-size: 12px; color: #94a3b8;">⚙️ Нажать для просмотра дела</span>
@@ -373,15 +355,11 @@
             <button class="btn-neon" style="border-color: #ef4444; color: #ef4444;" onclick="logout()">Выйти</button>
         </div>
 
-        <!-- Раздел Сценариев (Файлов) -->
         <div class="section-title">📂 АКТИВНЫЕ ДЕЛА И РАССЛЕДОВАНИЯ</div>
-        <div class="cases-grid" id="casesGridContainer">
-            <!-- Динамически загружается через JS -->
-        </div>
+        <div class="cases-grid" id="casesGridContainer"></div>
     </div>
 
-
-    <!-- ================= МОДАЛЬНОЕ ОКНО: ЛИЧНОЕ ДЕЛО И СТАТИСТИКА ================= -->
+    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ -->
     <div id="profileModal" class="modal-overlay hidden">
         <div class="profile-modal">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -392,7 +370,6 @@
             <div style="text-align: center; margin-bottom: 15px;">
                 <img id="modalAvatarDisplay" src="images/male.jpg" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid #38bdf8; object-fit: cover; margin-bottom: 10px;">
                 <br>
-                <!-- Загрузка фото из галереи -->
                 <label class="btn-neon" style="font-size: 11px; padding: 4px 10px; cursor: pointer;">
                     📷 Изменить фото из галереи
                     <input type="file" id="customAvatarInput" accept="image/*" class="hidden" onchange="uploadCustomAvatar(event)">
@@ -418,10 +395,7 @@
         </div>
     </div>
 
-
-    <!-- ================= СКРИПТЫ СИСТЕМЫ ================= -->
     <script>
-        // СПИСОК ВСЕХ ИГР / ДЕЛ
         const casesData = [
             {
                 id: 'case-404',
@@ -439,14 +413,12 @@
 
         let selectedAvatarUrl = 'images/male.jpg';
 
-        // Выбор аватарки при регистрации
         function selectAvatar(url, element) {
             selectedAvatarUrl = url;
             document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected'));
             element.classList.add('selected');
         }
 
-        // Показ / Скрытие пароля
         function togglePass(inputId, toggleBtn) {
             const field = document.getElementById(inputId);
             if (field.type === 'password') {
@@ -458,7 +430,6 @@
             }
         }
 
-        // Переключение режимов Вход / Регистрация
         function switchAuthMode(mode) {
             if (mode === 'login') {
                 document.getElementById('registerForm').classList.add('hidden');
@@ -469,7 +440,6 @@
             }
         }
 
-        // Регистрация
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('regUsername').value.trim();
@@ -482,20 +452,25 @@
                 return;
             }
 
+            // Проверяем, не занято ли имя
+            if (localStorage.getItem('detective_user_' + username)) {
+                alert('Детектив с таким именем уже зарегистрирован в системе!');
+                return;
+            }
+
             const user = {
                 username: username,
-                email: email || '', // Сохраняет почту если ввели, либо оставляем пустой
+                email: email || '',
                 password: pass,
                 avatar: selectedAvatarUrl,
                 completedCases: []
             };
 
             localStorage.setItem('detective_user_' + username, JSON.stringify(user));
-            localStorage.setItem('active_detective_session', JSON.stringify(user));
+            localStorage.setItem('active_detective_session', username); // Сохраняем только имя активного пользователя
             loadSession();
         });
 
-        // Вход
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('loginUsername').value.trim();
@@ -513,29 +488,31 @@
                 return;
             }
 
-            localStorage.setItem('active_detective_session', JSON.stringify(userData));
+            localStorage.setItem('active_detective_session', username);
             loadSession();
         });
 
-        // Проверка авторизации
         function loadSession() {
-            const activeSession = localStorage.getItem('active_detective_session');
-            if (activeSession) {
-                const user = JSON.parse(activeSession);
-                document.getElementById('authContainer').classList.add('hidden');
-                document.getElementById('mainDashboard').classList.remove('hidden');
-                
-                document.getElementById('userNameDisplay').textContent = user.username;
-                document.getElementById('userAvatarDisplay').src = user.avatar;
-                
-                renderCases(user);
-            } else {
-                document.getElementById('authContainer').classList.remove('hidden');
-                document.getElementById('mainDashboard').classList.add('hidden');
+            const activeUsername = localStorage.getItem('active_detective_session');
+            if (activeUsername) {
+                const savedUser = localStorage.getItem('detective_user_' + activeUsername);
+                if (savedUser) {
+                    const user = JSON.parse(savedUser);
+                    document.getElementById('authContainer').classList.add('hidden');
+                    document.getElementById('mainDashboard').classList.remove('hidden');
+                    
+                    document.getElementById('userNameDisplay').textContent = user.username;
+                    document.getElementById('userAvatarDisplay').src = user.avatar;
+                    
+                    renderCases(user);
+                    return;
+                }
             }
+            // Если сессии нет
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('mainDashboard').classList.add('hidden');
         }
 
-        // Отрисовка списка дел
         function renderCases(user) {
             const container = document.getElementById('casesGridContainer');
             container.innerHTML = '';
@@ -561,16 +538,14 @@
             });
         }
 
-        // Открытие файла с игрой
         function openCase(fileUrl) {
             window.location.href = fileUrl;
         }
 
-        // ---------------- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ----------------
         function openProfileModal() {
-            const activeSession = localStorage.getItem('active_detective_session');
-            if (!activeSession) return;
-            const user = JSON.parse(activeSession);
+            const activeUsername = localStorage.getItem('active_detective_session');
+            if (!activeUsername) return;
+            const user = JSON.parse(localStorage.getItem('detective_user_' + activeUsername));
 
             document.getElementById('modalUsername').textContent = user.username;
             document.getElementById('modalAvatarDisplay').src = user.avatar;
@@ -589,7 +564,6 @@
             document.getElementById('profileModal').classList.add('hidden');
         }
 
-        // Загрузка аватарки из галереи
         function uploadCustomAvatar(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -601,22 +575,20 @@
                 document.getElementById('modalAvatarDisplay').src = base64Avatar;
                 document.getElementById('userAvatarDisplay').src = base64Avatar;
 
-                const activeSession = JSON.parse(localStorage.getItem('active_detective_session'));
-                activeSession.avatar = base64Avatar;
+                const activeUsername = localStorage.getItem('active_detective_session');
+                const user = JSON.parse(localStorage.getItem('detective_user_' + activeUsername));
+                user.avatar = base64Avatar;
 
-                localStorage.setItem('active_detective_session', JSON.stringify(activeSession));
-                localStorage.setItem('detective_user_' + activeSession.username, JSON.stringify(activeSession));
+                localStorage.setItem('detective_user_' + activeUsername, JSON.stringify(user));
             };
             reader.readAsDataURL(file);
         }
 
-        // Выход
         function logout() {
             localStorage.removeItem('active_detective_session');
             loadSession();
         }
 
-        // Запуск
         loadSession();
     </script>
 </body>
