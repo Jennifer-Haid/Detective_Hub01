@@ -395,7 +395,25 @@
         </div>
     </div>
 
-    <script>
+    <!-- Подключаем Firebase SDK через модули -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIKUtpys1SdNIXabhtOxrOJnwkiOv4Y_8",
+            authDomain: "detective-hub.firebaseapp.com",
+            projectId: "detective-hub",
+            storageBucket: "detective-hub.appspot.com",
+            messagingSenderId: "641986528678",
+            appId: "1:641986528678:web:13de9ac469b73efe363b67",
+            measurementId: "G-REH1BG06M1",
+            databaseURL: "https://detective-hub-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
         const casesData = [
             {
                 id: 'case-001',
@@ -406,20 +424,20 @@
             {
                 id: 'case-002',
                 title: 'Дело № 002: В разработке',
-                description: 'Обнавление скоро! Следите за новыми обновлениями в нашем тгк Detective_Hub.',
+                description: 'Обновление скоро! Следите за новыми обновлениями в нашем тгк Detective_Hub.',
                 fileUrl: 'games/case-002.html'
             }
         ];
 
         let selectedAvatarUrl = 'images/male.jpg';
 
-        function selectAvatar(url, element) {
+        window.selectAvatar = function(url, element) {
             selectedAvatarUrl = url;
             document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected'));
             element.classList.add('selected');
         }
 
-        function togglePass(inputId, toggleBtn) {
+        window.togglePass = function(inputId, toggleBtn) {
             const field = document.getElementById(inputId);
             if (field.type === 'password') {
                 field.type = 'text';
@@ -430,7 +448,7 @@
             }
         }
 
-        function switchAuthMode(mode) {
+        window.switchAuthMode = function(mode) {
             if (mode === 'login') {
                 document.getElementById('registerForm').classList.add('hidden');
                 document.getElementById('loginForm').classList.remove('hidden');
@@ -440,7 +458,8 @@
             }
         }
 
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        // РЕГИСТРАЦИЯ В ОБЛАКЕ
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('regUsername').value.trim();
             const email = document.getElementById('regEmail').value.trim();
@@ -452,13 +471,15 @@
                 return;
             }
 
-            // Проверяем, не занято ли имя
-            if (localStorage.getItem('detective_user_' + username)) {
+            const userRef = ref(db, 'users/' + username);
+            const snapshot = await get(userRef);
+
+            if (snapshot.exists()) {
                 alert('Детектив с таким именем уже зарегистрирован в системе!');
                 return;
             }
 
-            const user = {
+            const newUser = {
                 username: username,
                 email: email || '',
                 password: pass,
@@ -466,23 +487,26 @@
                 completedCases: []
             };
 
-            localStorage.setItem('detective_user_' + username, JSON.stringify(user));
-            localStorage.setItem('active_detective_session', username); // Сохраняем только имя активного пользователя
+            await set(userRef, newUser);
+            localStorage.setItem('active_detective_session', username);
             loadSession();
         });
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // ВХОД ИЗ ОБЛАКА
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('loginUsername').value.trim();
             const pass = document.getElementById('loginPassword').value;
 
-            const savedUser = localStorage.getItem('detective_user_' + username);
-            if (!savedUser) {
-                alert('Пользователь не найден!');
+            const userRef = ref(db, 'users/' + username);
+            const snapshot = await get(userRef);
+
+            if (!snapshot.exists()) {
+                alert('Пользователь не найден в облачной базе!');
                 return;
             }
 
-            const userData = JSON.parse(savedUser);
+            const userData = snapshot.val();
             if (userData.password !== pass) {
                 alert('Неверный пароль!');
                 return;
@@ -492,12 +516,14 @@
             loadSession();
         });
 
-        function loadSession() {
+        async function loadSession() {
             const activeUsername = localStorage.getItem('active_detective_session');
             if (activeUsername) {
-                const savedUser = localStorage.getItem('detective_user_' + activeUsername);
-                if (savedUser) {
-                    const user = JSON.parse(savedUser);
+                const userRef = ref(db, 'users/' + activeUsername);
+                const snapshot = await get(userRef);
+
+                if (snapshot.exists()) {
+                    const user = snapshot.val();
                     document.getElementById('authContainer').classList.add('hidden');
                     document.getElementById('mainDashboard').classList.remove('hidden');
                     
@@ -508,7 +534,6 @@
                     return;
                 }
             }
-            // Если сессии нет
             document.getElementById('authContainer').classList.remove('hidden');
             document.getElementById('mainDashboard').classList.add('hidden');
         }
@@ -538,14 +563,17 @@
             });
         }
 
-        function openCase(fileUrl) {
+        window.openCase = function(fileUrl) {
             window.location.href = fileUrl;
         }
 
-        function openProfileModal() {
+        window.openProfileModal = async function() {
             const activeUsername = localStorage.getItem('active_detective_session');
             if (!activeUsername) return;
-            const user = JSON.parse(localStorage.getItem('detective_user_' + activeUsername));
+
+            const snapshot = await get(ref(db, 'users/' + activeUsername));
+            if (!snapshot.exists()) return;
+            const user = snapshot.val();
 
             document.getElementById('modalUsername').textContent = user.username;
             document.getElementById('modalAvatarDisplay').src = user.avatar;
@@ -560,31 +588,28 @@
             document.getElementById('profileModal').classList.remove('hidden');
         }
 
-        function closeProfileModal() {
+        window.closeProfileModal = function() {
             document.getElementById('profileModal').classList.add('hidden');
         }
 
-        function uploadCustomAvatar(event) {
+        window.uploadCustomAvatar = function(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 const base64Avatar = e.target.result;
 
                 document.getElementById('modalAvatarDisplay').src = base64Avatar;
                 document.getElementById('userAvatarDisplay').src = base64Avatar;
 
                 const activeUsername = localStorage.getItem('active_detective_session');
-                const user = JSON.parse(localStorage.getItem('detective_user_' + activeUsername));
-                user.avatar = base64Avatar;
-
-                localStorage.setItem('detective_user_' + activeUsername, JSON.stringify(user));
+                await update(ref(db, 'users/' + activeUsername), { avatar: base64Avatar });
             };
             reader.readAsDataURL(file);
         }
 
-        function logout() {
+        window.logout = function() {
             localStorage.removeItem('active_detective_session');
             loadSession();
         }
