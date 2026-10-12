@@ -323,8 +323,9 @@
             <div class="form-group">
                 <input type="text" id="regUsername" class="input-field" placeholder="ИМЯ ДЕТЕКТИВА (USERNAME)" required>
             </div>
+            <!-- Поле email стало необязательным (без required) -->
             <div class="form-group">
-                <input type="email" id="regEmail" class="input-field" placeholder="ЭЛЕКТРОННАЯ ПОЧТА (EMAIL)" required>
+                <input type="email" id="regEmail" class="input-field" placeholder="ЭЛЕКТРОННАЯ ПОЧТА (EMAIL - НЕОБЯЗАТЕЛЬНО)">
             </div>
             <div class="form-group">
                 <input type="password" id="regPassword" class="input-field" placeholder="ПАРОЛЬ (PASSWORD)" required>
@@ -420,7 +421,7 @@
 
     <!-- ================= СКРИПТЫ СИСТЕМЫ ================= -->
     <script>
-        // СПИСОК ВСЕХ ИГР / ДЕЛ (Добавляйте новые дела сюда!)
+        // СПИСОК ВСЕХ ИГР / ДЕЛ
         const casesData = [
             {
                 id: 'case-404',
@@ -483,10 +484,10 @@
 
             const user = {
                 username: username,
-                email: email,
+                email: email || '', // Сохраняет почту если ввели, либо оставляем пустой
                 password: pass,
                 avatar: selectedAvatarUrl,
-                completedCases: [] // Список ID пройденных дел
+                completedCases: []
             };
 
             localStorage.setItem('detective_user_' + username, JSON.stringify(user));
@@ -534,7 +535,7 @@
             }
         }
 
-        // Отрисовка списка дел (Файлов)
+        // Отрисовка списка дел
         function renderCases(user) {
             const container = document.getElementById('casesGridContainer');
             container.innerHTML = '';
@@ -577,7 +578,6 @@
             const completed = user.completedCases ? user.completedCases.length : 0;
             document.getElementById('completedCount').textContent = `${completed} / ${casesData.length}`;
 
-            // Звание зависит от количества пройденных дел
             if (completed === 0) document.getElementById('detectiveRank').textContent = 'Стажёр';
             else if (completed < casesData.length) document.getElementById('detectiveRank').textContent = 'Детектив';
             else document.getElementById('detectiveRank').textContent = 'Шеф Детективного Бюро';
@@ -598,11 +598,9 @@
             reader.onload = function(e) {
                 const base64Avatar = e.target.result;
 
-                // Обновляем отображение
                 document.getElementById('modalAvatarDisplay').src = base64Avatar;
                 document.getElementById('userAvatarDisplay').src = base64Avatar;
 
-                // Сохраняем в пользователя
                 const activeSession = JSON.parse(localStorage.getItem('active_detective_session'));
                 activeSession.avatar = base64Avatar;
 
