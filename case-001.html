@@ -55,8 +55,6 @@
             border-radius: 4px;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            margin-right: 10px;
-            margin-bottom: 10px;
         }
 
         .btn-neon:hover {
@@ -72,37 +70,13 @@
         <h1>🔍 Дело № 001: Убийство в театре</h1>
         <p>Расследуйте загадочное убийство главного режиссёра Виктора Громова в гримёрке во время антракта. Изучите улики и найдите преступника.</p>
 
-        <!-- Кнопка завершения дела и зачета прогресса -->
-        <button class="btn-neon" onclick="completeCase()">Завершить расследование</button>
-        
-        <!-- Кнопка возврата на главный экран (с исправление пути через ../) -->
-        <button class="btn-neon" style="border-color: #94a3b8; color: #94a3b8;" onclick="goHome()">← На главную</button>
+        <!-- Кнопка возврата на главный экран -->
+        <button class="btn-neon" onclick="goHome()">← На главную</button>
     </div>
 
     <script>
         // Функция возврата на главный экран
         function goHome() {
-            window.location.href = '../index.html';
-        }
-
-        // Функция завершения дела (засчитывает прогресс игроку)
-        function completeCase() {
-            const activeUsername = localStorage.getItem('active_detective_session');
-            if (activeUsername) {
-                const userKey = 'detective_user_' + activeUsername;
-                const user = JSON.parse(localStorage.getItem(userKey));
-                
-                if (user) {
-                    if (!user.completedCases) user.completedCases = [];
-                    
-                    // Добавляем дело в пройденные, если еще не пройдено
-                    if (!user.completedCases.includes('case-001')) {
-                        user.completedCases.push('case-001');
-                        localStorage.setItem(userKey, JSON.stringify(user));
-                    }
-                }
-            }
-            alert('Поздравляем! Дело успешно раскрыто!');
             window.location.href = '../index.html';
         }
     </script>
